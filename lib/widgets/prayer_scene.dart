@@ -257,7 +257,7 @@ class _SkyPainter extends CustomPainter {
     _paintStars(canvas, w, h, opacity: 0.35, maxY: 0.4);
   }
 
-  // ---------- العشاء: سماء ليلية + نجوم متلألئة + شهب ----------
+  // ---------- العشاء: سماء ليلية + قمر + درب التبانة + نجوم صليبية + شهب ----------
   void _paintIsha(Canvas canvas, double w, double h) {
     final rect = Rect.fromLTWH(0, 0, w, h);
     canvas.drawRect(
@@ -267,24 +267,30 @@ class _SkyPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color(0xFF070B18), // أسود مزرق
-            Color(0xFF101B33),
-            Color(0xFF1C2A4D),
+            Color(0xFF04070F), // أسود مزرق عميق
+            Color(0xFF0B1428),
+            Color(0xFF15223F),
           ],
         ).createShader(rect),
     );
 
+    // درب التبانة الخافت
+    _paintMilkyWay(canvas, w, h);
+
+    // قمر هلالي جميل
+    _paintMoon(canvas, w, h);
+
     // أفق المدينة البعيد
     _paintCitySkyline(canvas, w, h);
 
-    // نجوم متلألئة
+    // نجوم صليبية متلألئة
     _paintStars(canvas, w, h, opacity: 1.0);
 
     // شهب تظهر وتختفي ببطء
     _paintMeteors(canvas, w, h);
   }
 
-  // ---------- النجوم المتلألئة ----------
+  // ---------- النجوم الصليبية المتلألئة ----------
   void _paintStars(
     Canvas canvas,
     double w,
@@ -292,26 +298,121 @@ class _SkyPainter extends CustomPainter {
     required double opacity,
     double maxY = 0.75,
   }) {
-    final starPaint = Paint()..color = Colors.white.withOpacity(opacity);
     for (final s in _stars) {
       if (s.y > maxY) continue;
       // تلألؤ ناعم بطيء
       final twinkle =
           0.55 + 0.45 * math.sin(t * 2 * math.pi * s.speed + s.phase);
-      starPaint.color = Colors.white.withOpacity(opacity * twinkle);
-      final r = s.size * (0.8 + 0.4 * twinkle);
-      canvas.drawCircle(Offset(s.x * w, s.y * h), r, starPaint);
-      // توهج خفيف للنجوم الكبيرة
-      if (s.size > 2) {
-        canvas.drawCircle(
-          Offset(s.x * w, s.y * h),
-          r * 3,
-          Paint()
-            ..color = Colors.white.withOpacity(0.06 * opacity * twinkle)
-            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+      final center = Offset(s.x * w, s.y * h);
+      final baseR = s.size * (0.9 + 0.5 * twinkle);
+      final alpha = opacity * (0.4 + 0.6 * twinkle);
+      final big = s.size > 1.8;
+
+      // توهج خارجي ناعم
+      canvas.drawCircle(
+        center,
+        baseR * (big ? 4.2 : 2.6),
+        Paint()
+          ..color = Colors.white.withOpacity(0.05 * alpha)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8),
+      );
+
+      // أشعة صليبية (4 أشعة متقاطعة) للنجوم الكبيرة
+      if (big) {
+        final rayLen = baseR * (2.6 + 1.4 * twinkle);
+        final rayPaint = Paint()
+          ..color = Colors.white.withOpacity(0.75 * alpha)
+          ..strokeWidth = baseR * 0.55
+          ..strokeCap = StrokeCap.round;
+        // أفقي
+        canvas.drawLine(
+          Offset(center.dx - rayLen, center.dy),
+          Offset(center.dx + rayLen, center.dy),
+          rayPaint,
+        );
+        // عمودي
+        canvas.drawLine(
+          Offset(center.dx, center.dy - rayLen),
+          Offset(center.dx, center.dy + rayLen),
+          rayPaint,
         );
       }
+
+      // قلب النجمة المتوهج
+      canvas.drawCircle(
+        center,
+        baseR * 0.9,
+        Paint()..color = Colors.white.withOpacity(0.95 * alpha),
+      );
+      canvas.drawCircle(
+        center,
+        baseR * 1.7,
+        Paint()
+          ..color = const Color(0xFFDCE8FF).withOpacity(0.28 * alpha)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+      );
     }
+  }
+
+  // ---------- قمر هلالي ذهبي ----------
+  void _paintMoon(Canvas canvas, double w, double h) {
+    final center = Offset(w * 0.78, h * 0.2);
+    final r = w * 0.075;
+
+    // هالة القمر
+    canvas.drawCircle(
+      center,
+      r * 2.4,
+      Paint()
+        ..color = const Color(0xFFF5E9C4).withOpacity(0.12)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18),
+    );
+
+    // قرص القمر
+    canvas.drawCircle(
+      center,
+      r,
+      Paint()..color = const Color(0xFFF5E9C4).withOpacity(0.95),
+    );
+
+    // إزاحة الظل لعمل الهلال
+    final shadowOffset = Offset(r * 0.55, -r * 0.18);
+    canvas.drawCircle(
+      center + shadowOffset,
+      r * 0.92,
+      Paint()..color = const Color(0xFF0B1428),
+    );
+
+    // حافة مضيئة خفيفة على الهلال
+    canvas.drawCircle(
+      center + shadowOffset,
+      r * 0.92,
+      Paint()
+        ..color = const Color(0xFF0B1428)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2,
+    );
+  }
+
+  // ---------- درب التبانة الخافت ----------
+  void _paintMilkyWay(Canvas canvas, double w, double h) {
+    final path = Path()..moveTo(w * 0.05, h * 0.05);
+    // خط متموج عبر السماء
+    for (var i = 1; i <= 10; i++) {
+      final x = w * (0.05 + i * 0.09);
+      final y = h * (0.05 + i * 0.06 + math.sin(i * 1.3) * 0.03);
+      path.lineTo(x, y);
+    }
+    canvas.drawPath(
+      path,
+      Paint()
+        ..shader = const LinearGradient(
+          colors: [Colors.transparent, Colors.white, Colors.transparent],
+        ).createShader(Rect.fromLTWH(0, 0, w, h))
+        ..strokeWidth = w * 0.05
+        ..strokeCap = StrokeCap.round
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20),
+    );
   }
 
   // ---------- الشهب: تظهر وتمر وتختفي ببطء ----------

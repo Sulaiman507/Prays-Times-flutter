@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 
-/// لوحة الألوان الفاخرة: كحلي عميق، ذهبي هادئ، زيتي مريح، أسود دافئ
+/// لوحة الألوان الفاخرة: زمردي عميق (زيتي)، ذهبي هادئ، كحلي ليلي
 class AppColors {
-  // ---------- اللون الأساسي: الكحلي الفاخر ----------
-  static const navy = Color(0xFF1A2A44);
-  static const navyDeep = Color(0xFF0D1526);
-  static const navyLight = Color(0xFF24406B);
+  // ---------- اللون الأساسي: الزمردي/الزيتي الفاخر ----------
+  static const emerald = Color(0xFF1B5B47);
+  static const emeraldLight = Color(0xFF2E7D5B);
+  static const emeraldDeep = Color(0xFF0D2620);
+  static const emeraldBlack = Color(0xFF081712);
 
   // ---------- الذهبي الهادئ ----------
   static const gold = Color(0xFFC9A24B);
   static const goldLight = Color(0xFFE8CE8C);
   static const goldDark = Color(0xFF9A7B2F);
 
-  // ---------- الأخضر الزيتي الهادئ ----------
-  static const olive = Color(0xFF5B6B4B);
-  static const oliveLight = Color(0xFF7C8F66);
+  // ---------- الكحلي الليلي (للوضع الفاتح والبطاقات) ----------
+  static const navy = Color(0xFF1A2A44);
+  static const navyDeep = Color(0xFF0D1526);
+  static const navyLight = Color(0xFF24406B);
 
-  // ---------- درجات الليل العميق للوضع الداكن ----------
-  static const night = Color(0xFF0B0F17); // خلفية أساسية
-  static const nightRaised = Color(0xFF131A26); // بطاقات
-  static const nightBorder = Color(0xFF1E2838); // حدود
-  static const cardDark = Color(0xFF141C2B);
+  // ---------- درجات الليل الزمردي للوضع الداكن ----------
+  static const night = Color(0xFF081712); // خلفية أساسية (أسود مخضر)
+  static const nightRaised = Color(0xFF0D2620); // بطاقات (زمردي داكن)
+  static const cardDark = Color(0xFF12352A); // بطاقات مرتفعة
+  static const nightBorder = Color(0xFF1B5B47); // حدود زمردية
 
   // ---------- الأبيض الكريمي للوضع الفاتح ----------
   static const cream = Color(0xFFF7F3EA);
@@ -29,7 +31,7 @@ class AppColors {
   // ---------- نصوص ----------
   static const textLight = Color(0xFFF2EDE3);
   static const textMuted = Color(0xFF9AA3B2);
-  static const textMutedDark = Color(0xFF8B95A8);
+  static const textMutedDark = Color(0xFF8FA398);
   static const textDark = Color(0xFF1A2434);
 }
 
@@ -68,10 +70,10 @@ class AppTheme {
       useMaterial3: true,
       fontFamily: fontFamily,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.navyLight,
+        seedColor: AppColors.emerald,
         brightness: Brightness.dark,
-        primary: AppColors.gold,
-        secondary: AppColors.goldLight,
+        primary: AppColors.emeraldLight,
+        secondary: AppColors.gold,
         surface: AppColors.nightRaised,
       ),
     );
@@ -101,7 +103,7 @@ class AppTheme {
         inactiveTrackColor: AppColors.nightBorder,
         thumbColor: AppColors.goldLight,
         overlayColor: AppColors.gold.withOpacity(0.15),
-        valueIndicatorColor: AppColors.navyLight,
+        valueIndicatorColor: AppColors.emeraldLight,
       ),
       radioTheme: RadioThemeData(
         fillColor: WidgetStateProperty.resolveWith((_) => AppColors.gold),
