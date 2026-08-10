@@ -85,7 +85,9 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
               controller: _controller,
               onChanged: _onSearch,
               decoration: InputDecoration(
-                hintText: lang == 'ar' ? 'ابحث عن مدينة أو دولة...' : 'Search city or country...',
+                hintText: lang == 'ar'
+                    ? 'ابحث عن مدينة أو دولة...'
+                    : 'Search city or country...',
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _query.isEmpty
                     ? null
@@ -108,8 +110,8 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
                 : _query.isNotEmpty
-                    ? _buildSearchResults(lang)
-                    : _buildGroupedList(lang, isDark),
+                ? _buildSearchResults(lang)
+                : _buildGroupedList(lang, isDark),
           ),
         ],
       ),
@@ -200,7 +202,10 @@ class _CountrySectionState extends State<_CountrySection> {
                 ),
                 Text(
                   '${widget.cities.length}',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textMuted),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textMuted,
+                  ),
                 ),
                 Icon(
                   _expanded ? Icons.expand_less : Icons.expand_more,
@@ -212,7 +217,11 @@ class _CountrySectionState extends State<_CountrySection> {
         ),
         if (_expanded)
           for (final city in widget.cities)
-            _CityTile(city: city, lang: widget.lang, onTap: () => widget.onSelect(city)),
+            _CityTile(
+              city: city,
+              lang: widget.lang,
+              onTap: () => widget.onSelect(city),
+            ),
       ],
     );
   }
@@ -224,7 +233,11 @@ class _CityTile extends StatelessWidget {
   final String lang;
   final VoidCallback onTap;
 
-  const _CityTile({required this.city, required this.lang, required this.onTap});
+  const _CityTile({
+    required this.city,
+    required this.lang,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

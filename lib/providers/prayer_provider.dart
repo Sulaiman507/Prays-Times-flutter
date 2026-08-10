@@ -85,6 +85,17 @@ class PrayerProvider extends ChangeNotifier {
   /// اسم الصلاة القادمة باللغة الحالية
   String get nextPrayerName => _today?.nextPrayer.name(settings.lang) ?? '';
 
+  /// الصلاة الحالية — آخر صلاة دخل وقتها (تحدد مشهد السماء في الترويسة)
+  PrayerType get currentPrayer {
+    final t = _today;
+    if (t == null) return PrayerType.fajr;
+    var current = PrayerType.isha;
+    for (final p in PrayerType.values) {
+      if (!t.times[p]!.isAfter(_now)) current = p;
+    }
+    return current;
+  }
+
   @override
   void dispose() {
     _ticker?.cancel();

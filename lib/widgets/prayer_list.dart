@@ -31,10 +31,7 @@ class PrayerList extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? AppColors.cardDark : Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: AppColors.gold.withOpacity(0.15),
-          width: 0.5,
-        ),
+        border: Border.all(color: AppColors.gold.withOpacity(0.15), width: 0.5),
       ),
       child: Column(
         children: [
@@ -89,7 +86,9 @@ class _PrayerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final highlightColor = isDark ? AppColors.gold.withOpacity(0.12) : AppColors.gold.withOpacity(0.08);
+    final highlightColor = isDark
+        ? AppColors.gold.withOpacity(0.12)
+        : AppColors.gold.withOpacity(0.08);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -106,11 +105,15 @@ class _PrayerRow extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isNext ? AppColors.gold.withOpacity(0.15) : AppColors.navy.withOpacity(isDark ? 0.3 : 0.06),
+              color: isNext
+                  ? AppColors.gold.withOpacity(0.15)
+                  : AppColors.navy.withOpacity(isDark ? 0.3 : 0.06),
             ),
             child: Icon(
               _iconFor(type),
-              color: isNext ? AppColors.gold : (isDark ? AppColors.textMuted : AppColors.navy),
+              color: isNext
+                  ? AppColors.gold
+                  : (isDark ? AppColors.textMuted : AppColors.navy),
               size: 20,
             ),
           ),
@@ -132,14 +135,21 @@ class _PrayerRow extends StatelessWidget {
                 if (isNext) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.gold,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       lang == 'ar' ? 'التالي' : 'NEXT',
-                      style: const TextStyle(fontSize: 10, color: AppColors.navyDeep, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: AppColors.navyDeep,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -162,7 +172,10 @@ class _PrayerRow extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 '$iqama ${lang == 'ar' ? 'الإقامة' : 'Iqama'}',
-                style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMuted,
+                ),
               ),
             ],
           ),

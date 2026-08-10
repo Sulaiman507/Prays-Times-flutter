@@ -81,11 +81,11 @@ class CountdownTimer extends StatelessWidget {
   }
 
   Widget _colon() => const Text(
-        ':',
-        style: TextStyle(
-          fontSize: 26,
-          fontWeight: FontWeight.bold,
-          color: AppColors.gold,
-        ),
-      );
+    ':',
+    style: TextStyle(
+      fontSize: 26,
+      fontWeight: FontWeight.bold,
+      color: AppColors.gold,
+    ),
+  );
 }

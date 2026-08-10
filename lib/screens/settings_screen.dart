@@ -18,9 +18,7 @@ class SettingsScreen extends StatelessWidget {
     const fonts = ['Tajawal', 'Amiri'];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(lang == 'ar' ? 'الإعدادات' : 'Settings'),
-      ),
+      appBar: AppBar(title: Text(lang == 'ar' ? 'الإعدادات' : 'Settings')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -87,7 +85,9 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (v) => settings.darkMode = v!,
                   icon: Icons.light_mode,
                   title: lang == 'ar' ? 'الوضع الفاتح' : 'Light Mode',
-                  subtitle: lang == 'ar' ? 'خلفية كريمية هادئة' : 'Cream background',
+                  subtitle: lang == 'ar'
+                      ? 'خلفية كريمية هادئة'
+                      : 'Cream background',
                 ),
                 _RadioTile<bool>(
                   value: true,
@@ -95,7 +95,9 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (v) => settings.darkMode = v!,
                   icon: Icons.dark_mode,
                   title: lang == 'ar' ? 'الوضع الداكن' : 'Dark Mode',
-                  subtitle: lang == 'ar' ? 'أسود دافئ مريح للعين' : 'Warm dark background',
+                  subtitle: lang == 'ar'
+                      ? 'أسود دافئ مريح للعين'
+                      : 'Warm dark background',
                 ),
               ],
             ),
@@ -110,7 +112,10 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 Text(
                   lang == 'ar' ? 'خط العربية' : 'Arabic Font',
-                  style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textMuted,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 _FontChips(
@@ -121,7 +126,10 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 14),
                 Text(
                   lang == 'ar' ? 'خط الإنجليزية' : 'English Font',
-                  style: const TextStyle(fontSize: 13, color: AppColors.textMuted),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textMuted,
+                  ),
                 ),
                 const SizedBox(height: 6),
                 _FontChips(
@@ -146,7 +154,9 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    lang == 'ar' ? 'دقائق الإقامة بعد الأذان' : 'Iqama minutes after Adhan',
+                    lang == 'ar'
+                        ? 'دقائق الإقامة بعد الأذان'
+                        : 'Iqama minutes after Adhan',
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -169,6 +179,48 @@ class SettingsScreen extends StatelessWidget {
             divisions: 12,
             label: '${settings.iqamaOffset} min',
             onChanged: (v) => settings.iqamaOffset = v.round(),
+          ),
+          const SizedBox(height: 30),
+
+          // ---------- حول التطبيق ----------
+          _SectionTitle(text: lang == 'ar' ? 'حول التطبيق' : 'About'),
+          _SettingsCard(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.apartment, color: AppColors.gold),
+                  title: Text(lang == 'ar' ? 'المؤسسة' : 'Organization'),
+                  subtitle: const Text(
+                    'S.Muslim',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.goldDark,
+                    ),
+                  ),
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading: const Icon(Icons.code, color: AppColors.gold),
+                  title: Text(lang == 'ar' ? 'المطوّر' : 'Developer'),
+                  subtitle: const Text(
+                    'سليمان الرمادي',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.goldDark,
+                    ),
+                  ),
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading: const Icon(
+                    Icons.info_outline,
+                    color: AppColors.gold,
+                  ),
+                  title: Text(lang == 'ar' ? 'الإصدار' : 'Version'),
+                  subtitle: const Text('1.0.0'),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 30),
         ],

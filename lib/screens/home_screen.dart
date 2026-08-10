@@ -57,10 +57,14 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   Center(
                     child: Text(
-                      settings.isAr ? '﴿ وَإِذَا نَادَيْتُمْ إِلَى الصَّلَاةِ ﴾' : '"When the call to prayer is made"',
+                      settings.isAr
+                          ? '﴿ وَإِذَا نَادَيْتُمْ إِلَى الصَّلَاةِ ﴾'
+                          : '"When the call to prayer is made"',
                       style: TextStyle(
                         fontSize: 13,
-                        color: isDark ? AppColors.textMuted : AppColors.textDark.withOpacity(0.5),
+                        color: isDark
+                            ? AppColors.textMuted
+                            : AppColors.textDark.withOpacity(0.5),
                         fontStyle: FontStyle.italic,
                       ),
                     ),
