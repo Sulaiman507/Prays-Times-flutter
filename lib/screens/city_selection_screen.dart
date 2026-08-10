@@ -6,6 +6,7 @@ import '../models/city.dart';
 import '../providers/app_settings.dart';
 import '../providers/prayer_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/gradient_background.dart';
 
 /// شاشة اختيار المدينة — بحث فوري + تجميع حسب الدولة
 class CitySelectionScreen extends StatefulWidget {
@@ -73,47 +74,85 @@ class _CitySelectionScreenState extends State<CitySelectionScreen> {
     final isDark = settings.darkMode;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(lang == 'ar' ? 'اختيار المدينة' : 'Select City'),
       ),
-      body: Column(
-        children: [
-          // حقل البحث
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: TextField(
-              controller: _controller,
-              onChanged: _onSearch,
-              decoration: InputDecoration(
-                hintText: lang == 'ar'
-                    ? 'ابحث عن مدينة أو دولة...'
-                    : 'Search city or country...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: _query.isEmpty
-                    ? null
-                    : IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _controller.clear();
-                          _onSearch('');
-                        },
-                      ),
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide.none,
+      body: GradientBackground(
+        isDark: isDark,
+        child: Column(
+          children: [
+            // حقل البحث
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 80, 16, 8),
+              child: TextField(
+                controller: _controller,
+                onChanged: _onSearch,
+                style: TextStyle(
+                  color: isDark ? AppColors.textLight : AppColors.textDark,
+                ),
+                decoration: InputDecoration(
+                  hintText: lang == 'ar'
+                      ? 'ابحث عن مدينة أو دولة...'
+                      : 'Search city or country...',
+                  hintStyle: TextStyle(
+                    color: isDark
+                        ? AppColors.textMutedDark
+                        : AppColors.textMuted,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: isDark ? AppColors.gold : AppColors.navy,
+                  ),
+                  suffixIcon: _query.isEmpty
+                      ? null
+                      : IconButton(
+                          icon: Icon(
+                            Icons.clear,
+                            color: isDark
+                                ? AppColors.textMutedDark
+                                : AppColors.textMuted,
+                          ),
+                          onPressed: () {
+                            _controller.clear();
+                            _onSearch('');
+                          },
+                        ),
+                  filled: true,
+                  fillColor: isDark
+                      ? Colors.white.withOpacity(0.07)
+                      : Colors.white.withOpacity(0.7),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(
+                      color: AppColors.gold.withOpacity(0.25),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(
+                      color: AppColors.gold.withOpacity(0.25),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(
+                      color: AppColors.gold.withOpacity(0.6),
+                      width: 1.5,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: _loading
-                ? const Center(child: CircularProgressIndicator())
-                : _query.isNotEmpty
-                ? _buildSearchResults(lang)
-                : _buildGroupedList(lang, isDark),
-          ),
-        ],
+            Expanded(
+              child: _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _query.isNotEmpty
+                  ? _buildSearchResults(lang)
+                  : _buildGroupedList(lang, isDark),
+            ),
+          ],
+        ),
       ),
     );
   }

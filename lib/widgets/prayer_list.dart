@@ -6,7 +6,7 @@ import '../providers/prayer_provider.dart';
 import '../services/prayer_time_service.dart';
 import '../theme/app_theme.dart';
 
-/// قائمة الصلوات: اسم + وقت الأذان + وقت الإقامة
+/// قائمة الصلوات: بطاقة زجاجية فاخرة — اسم + وقت الأذان + وقت الإقامة
 class PrayerList extends StatelessWidget {
   final PrayerProvider provider;
   final AppSettings settings;
@@ -28,11 +28,7 @@ class PrayerList extends StatelessWidget {
     final lang = settings.lang;
 
     return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.cardDark : Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.gold.withOpacity(0.15), width: 0.5),
-      ),
+      decoration: AppTheme.glassCard(isDark: isDark, radius: 28),
       child: Column(
         children: [
           for (var i = 0; i < _prayers.length; i++) ...[
@@ -57,7 +53,7 @@ class PrayerList extends StatelessWidget {
                 endIndent: 16,
                 color: isDark
                     ? Colors.white.withOpacity(0.06)
-                    : Colors.black.withOpacity(0.06),
+                    : Colors.black.withOpacity(0.05),
               ),
           ],
         ],
@@ -86,34 +82,56 @@ class _PrayerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final highlightColor = isDark
-        ? AppColors.gold.withOpacity(0.12)
-        : AppColors.gold.withOpacity(0.08);
+    final highlightColor = isNext
+        ? (isDark
+              ? AppColors.gold.withOpacity(0.14)
+              : AppColors.gold.withOpacity(0.12))
+        : Colors.transparent;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
-        color: isNext ? highlightColor : Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        color: highlightColor,
+        borderRadius: BorderRadius.circular(18),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
-          // أيقونة الصلاة
+          // أيقونة الصلاة بتدرج
           Container(
-            width: 40,
-            height: 40,
+            width: 42,
+            height: 42,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isNext
-                  ? AppColors.gold.withOpacity(0.15)
-                  : AppColors.navy.withOpacity(isDark ? 0.3 : 0.06),
+              gradient: isNext
+                  ? const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.goldLight,
+                        AppColors.gold,
+                        AppColors.goldDark,
+                      ],
+                    )
+                  : (isDark
+                        ? LinearGradient(
+                            colors: [
+                              AppColors.emerald.withOpacity(0.5),
+                              AppColors.nightRaised.withOpacity(0.6),
+                            ],
+                          )
+                        : LinearGradient(
+                            colors: [
+                              AppColors.navy.withOpacity(0.15),
+                              AppColors.navyLight.withOpacity(0.08),
+                            ],
+                          )),
             ),
             child: Icon(
               _iconFor(type),
               color: isNext
-                  ? AppColors.gold
-                  : (isDark ? AppColors.textMuted : AppColors.navy),
+                  ? AppColors.navyDeep
+                  : (isDark ? AppColors.textMutedDark : AppColors.navy),
               size: 20,
             ),
           ),
@@ -140,8 +158,14 @@ class _PrayerRow extends StatelessWidget {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.gold,
+                      gradient: AppTheme.goldGradient,
                       borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.gold.withOpacity(0.4),
+                          blurRadius: 8,
+                        ),
+                      ],
                     ),
                     child: Text(
                       lang == 'ar' ? 'التالي' : 'NEXT',
@@ -172,9 +196,9 @@ class _PrayerRow extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 '$iqama ${lang == 'ar' ? 'الإقامة' : 'Iqama'}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
-                  color: AppColors.textMuted,
+                  color: isDark ? AppColors.textMutedDark : AppColors.textMuted,
                 ),
               ),
             ],

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/app_settings.dart';
 import '../theme/app_theme.dart';
+import '../widgets/gradient_background.dart';
 
 /// شاشة الإعدادات: اللغة، الوقت، الثيم، الخطوط، الإقامة
 class SettingsScreen extends StatelessWidget {
@@ -18,212 +19,221 @@ class SettingsScreen extends StatelessWidget {
     const fonts = ['Tajawal', 'Amiri'];
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(title: Text(lang == 'ar' ? 'الإعدادات' : 'Settings')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // ---------- اللغة ----------
-          _SectionTitle(text: lang == 'ar' ? 'اللغة' : 'Language'),
-          _SettingsCard(
-            child: Column(
-              children: [
-                _RadioTile<String>(
-                  value: 'ar',
-                  groupValue: settings.lang,
-                  onChanged: (v) => settings.lang = v!,
-                  icon: Icons.language,
-                  title: 'العربية',
-                  subtitle: 'RTL',
-                ),
-                _RadioTile<String>(
-                  value: 'en',
-                  groupValue: settings.lang,
-                  onChanged: (v) => settings.lang = v!,
-                  icon: Icons.translate,
-                  title: 'English',
-                  subtitle: 'LTR',
-                ),
-              ],
-            ),
+      body: GradientBackground(
+        isDark: isDark,
+        child: ListView(
+          padding: const EdgeInsets.only(
+            top: 80,
+            left: 16,
+            right: 16,
+            bottom: 16,
           ),
-          const SizedBox(height: 20),
-
-          // ---------- نظام الوقت ----------
-          _SectionTitle(text: lang == 'ar' ? 'نظام الوقت' : 'Time Format'),
-          _SettingsCard(
-            child: Column(
-              children: [
-                _RadioTile<bool>(
-                  value: false,
-                  groupValue: settings.time24h,
-                  onChanged: (v) => settings.time24h = v!,
-                  icon: Icons.schedule,
-                  title: lang == 'ar' ? '12 ساعة' : '12-hour',
-                  subtitle: '4:30 PM',
-                ),
-                _RadioTile<bool>(
-                  value: true,
-                  groupValue: settings.time24h,
-                  onChanged: (v) => settings.time24h = v!,
-                  icon: Icons.access_time,
-                  title: lang == 'ar' ? '24 ساعة' : '24-hour',
-                  subtitle: '16:30',
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // ---------- المظهر ----------
-          _SectionTitle(text: lang == 'ar' ? 'المظهر' : 'Appearance'),
-          _SettingsCard(
-            child: Column(
-              children: [
-                _RadioTile<bool>(
-                  value: false,
-                  groupValue: settings.darkMode,
-                  onChanged: (v) => settings.darkMode = v!,
-                  icon: Icons.light_mode,
-                  title: lang == 'ar' ? 'الوضع الفاتح' : 'Light Mode',
-                  subtitle: lang == 'ar'
-                      ? 'خلفية كريمية هادئة'
-                      : 'Cream background',
-                ),
-                _RadioTile<bool>(
-                  value: true,
-                  groupValue: settings.darkMode,
-                  onChanged: (v) => settings.darkMode = v!,
-                  icon: Icons.dark_mode,
-                  title: lang == 'ar' ? 'الوضع الداكن' : 'Dark Mode',
-                  subtitle: lang == 'ar'
-                      ? 'أسود دافئ مريح للعين'
-                      : 'Warm dark background',
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // ---------- الخطوط ----------
-          _SectionTitle(text: lang == 'ar' ? 'الخطوط' : 'Fonts'),
-          _SettingsCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  lang == 'ar' ? 'خط العربية' : 'Arabic Font',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textMuted,
+          children: [
+            // ---------- اللغة ----------
+            _SectionTitle(text: lang == 'ar' ? 'اللغة' : 'Language'),
+            _SettingsCard(
+              child: Column(
+                children: [
+                  _RadioTile<String>(
+                    value: 'ar',
+                    groupValue: settings.lang,
+                    onChanged: (v) => settings.lang = v!,
+                    icon: Icons.language,
+                    title: 'العربية',
+                    subtitle: 'RTL',
                   ),
-                ),
-                const SizedBox(height: 6),
-                _FontChips(
-                  options: fonts,
-                  selected: settings.fontAr,
-                  onSelected: (f) => settings.fontAr = f,
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  lang == 'ar' ? 'خط الإنجليزية' : 'English Font',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textMuted,
+                  _RadioTile<String>(
+                    value: 'en',
+                    groupValue: settings.lang,
+                    onChanged: (v) => settings.lang = v!,
+                    icon: Icons.translate,
+                    title: 'English',
+                    subtitle: 'LTR',
                   ),
-                ),
-                const SizedBox(height: 6),
-                _FontChips(
-                  options: fonts,
-                  selected: settings.fontEn,
-                  onSelected: (f) => settings.fontEn = f,
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-          // ---------- الإقامة ----------
-          _SectionTitle(text: lang == 'ar' ? 'الإقامة' : 'Iqama'),
-          _SettingsCard(
-            child: Row(
-              children: [
-                Icon(
-                  Icons.timer_outlined,
-                  color: isDark ? AppColors.gold : AppColors.navy,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    lang == 'ar'
-                        ? 'دقائق الإقامة بعد الأذان'
-                        : 'Iqama minutes after Adhan',
+            // ---------- نظام الوقت ----------
+            _SectionTitle(text: lang == 'ar' ? 'نظام الوقت' : 'Time Format'),
+            _SettingsCard(
+              child: Column(
+                children: [
+                  _RadioTile<bool>(
+                    value: false,
+                    groupValue: settings.time24h,
+                    onChanged: (v) => settings.time24h = v!,
+                    icon: Icons.schedule,
+                    title: lang == 'ar' ? '12 ساعة' : '12-hour',
+                    subtitle: '4:30 PM',
                   ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  '${settings.iqamaOffset} ${lang == 'ar' ? 'د' : 'min'}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.goldDark,
+                  _RadioTile<bool>(
+                    value: true,
+                    groupValue: settings.time24h,
+                    onChanged: (v) => settings.time24h = v!,
+                    icon: Icons.access_time,
+                    title: lang == 'ar' ? '24 ساعة' : '24-hour',
+                    subtitle: '16:30',
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Slider(
-            value: settings.iqamaOffset.toDouble(),
-            min: 0,
-            max: 60,
-            divisions: 12,
-            label: '${settings.iqamaOffset} min',
-            onChanged: (v) => settings.iqamaOffset = v.round(),
-          ),
-          const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
-          // ---------- حول التطبيق ----------
-          _SectionTitle(text: lang == 'ar' ? 'حول التطبيق' : 'About'),
-          _SettingsCard(
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.apartment, color: AppColors.gold),
-                  title: Text(lang == 'ar' ? 'المؤسسة' : 'Organization'),
-                  subtitle: const Text(
-                    'S.Muslim',
-                    style: TextStyle(
+            // ---------- المظهر ----------
+            _SectionTitle(text: lang == 'ar' ? 'المظهر' : 'Appearance'),
+            _SettingsCard(
+              child: Column(
+                children: [
+                  _RadioTile<bool>(
+                    value: false,
+                    groupValue: settings.darkMode,
+                    onChanged: (v) => settings.darkMode = v!,
+                    icon: Icons.light_mode,
+                    title: lang == 'ar' ? 'الوضع الفاتح' : 'Light Mode',
+                    subtitle: lang == 'ar'
+                        ? 'خلفية كريمية هادئة'
+                        : 'Cream background',
+                  ),
+                  _RadioTile<bool>(
+                    value: true,
+                    groupValue: settings.darkMode,
+                    onChanged: (v) => settings.darkMode = v!,
+                    icon: Icons.dark_mode,
+                    title: lang == 'ar' ? 'الوضع الداكن' : 'Dark Mode',
+                    subtitle: lang == 'ar'
+                        ? 'أسود دافئ مريح للعين'
+                        : 'Warm dark background',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // ---------- الخطوط ----------
+            _SectionTitle(text: lang == 'ar' ? 'الخطوط' : 'Fonts'),
+            _SettingsCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    lang == 'ar' ? 'خط العربية' : 'Arabic Font',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  _FontChips(
+                    options: fonts,
+                    selected: settings.fontAr,
+                    onSelected: (f) => settings.fontAr = f,
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    lang == 'ar' ? 'خط الإنجليزية' : 'English Font',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  _FontChips(
+                    options: fonts,
+                    selected: settings.fontEn,
+                    onSelected: (f) => settings.fontEn = f,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // ---------- الإقامة ----------
+            _SectionTitle(text: lang == 'ar' ? 'الإقامة' : 'Iqama'),
+            _SettingsCard(
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.timer_outlined,
+                    color: isDark ? AppColors.gold : AppColors.navy,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      lang == 'ar'
+                          ? 'دقائق الإقامة بعد الأذان'
+                          : 'Iqama minutes after Adhan',
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    '${settings.iqamaOffset} ${lang == 'ar' ? 'د' : 'min'}',
+                    style: const TextStyle(
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: AppColors.goldDark,
                     ),
                   ),
-                ),
-                const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(Icons.code, color: AppColors.gold),
-                  title: Text(lang == 'ar' ? 'المطوّر' : 'Developer'),
-                  subtitle: const Text(
-                    'سليمان الرمادي',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.goldDark,
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Slider(
+              value: settings.iqamaOffset.toDouble(),
+              min: 0,
+              max: 60,
+              divisions: 12,
+              label: '${settings.iqamaOffset} min',
+              onChanged: (v) => settings.iqamaOffset = v.round(),
+            ),
+            const SizedBox(height: 30),
+
+            // ---------- حول التطبيق ----------
+            _SectionTitle(text: lang == 'ar' ? 'حول التطبيق' : 'About'),
+            _SettingsCard(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.apartment, color: AppColors.gold),
+                    title: Text(lang == 'ar' ? 'المؤسسة' : 'Organization'),
+                    subtitle: const Text(
+                      'S.Muslim',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.goldDark,
+                      ),
                     ),
                   ),
-                ),
-                const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(
-                    Icons.info_outline,
-                    color: AppColors.gold,
+                  const Divider(height: 1, indent: 56),
+                  ListTile(
+                    leading: const Icon(Icons.code, color: AppColors.gold),
+                    title: Text(lang == 'ar' ? 'المطوّر' : 'Developer'),
+                    subtitle: const Text(
+                      'سليمان الرمادي',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.goldDark,
+                      ),
+                    ),
                   ),
-                  title: Text(lang == 'ar' ? 'الإصدار' : 'Version'),
-                  subtitle: const Text('1.0.0'),
-                ),
-              ],
+                  const Divider(height: 1, indent: 56),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.info_outline,
+                      color: AppColors.gold,
+                    ),
+                    title: Text(lang == 'ar' ? 'الإصدار' : 'Version'),
+                    subtitle: const Text('1.0.0'),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 30),
-        ],
+            const SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }
@@ -259,11 +269,7 @@ class _SettingsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      decoration: BoxDecoration(
-        color: isDark ? AppColors.cardDark : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold.withOpacity(0.12)),
-      ),
+      decoration: AppTheme.glassCard(isDark: isDark, radius: 20, opacity: 0.55),
       child: child,
     );
   }
