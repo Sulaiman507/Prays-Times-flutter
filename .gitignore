@@ -1,0 +1,27 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+
+# أداة التحليل
+.dart_tool/
+.flutter-plugins*
+
+# النظام
+.DS_Store
+*.log

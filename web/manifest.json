@@ -1,0 +1,12 @@
+{
+    "name": "مواقيت الصلاة",
+    "short_name": "مواقيت",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#12151C",
+    "theme_color": "#1A2A44",
+    "description": "تطبيق مواقيت الصلاة — يعمل بدون إنترنت",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": []
+}
