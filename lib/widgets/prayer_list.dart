@@ -15,6 +15,7 @@ class PrayerList extends StatelessWidget {
 
   static const _prayers = [
     PrayerType.fajr,
+    PrayerType.sunrise,
     PrayerType.dhuhr,
     PrayerType.asr,
     PrayerType.maghrib,
@@ -41,10 +42,12 @@ class PrayerList extends StatelessWidget {
                 provider.today!.timeOf(_prayers[i]),
                 time24h: settings.time24h,
               ),
-              iqama: PrayerTimeService.formatTime(
-                provider.iqamaTime(_prayers[i]),
-                time24h: settings.time24h,
-              ),
+              iqama: _prayers[i] == PrayerType.sunrise
+                  ? null
+                  : PrayerTimeService.formatTime(
+                      provider.iqamaTime(_prayers[i]),
+                      time24h: settings.time24h,
+                    ),
             ),
             if (i < _prayers.length - 1)
               Divider(
@@ -194,13 +197,26 @@ class _PrayerRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
-              Text(
-                '$iqama ${lang == 'ar' ? 'الإقامة' : 'Iqama'}',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: isDark ? AppColors.textMutedDark : AppColors.textMuted,
+              if (iqama != null)
+                Text(
+                  '$iqama ${lang == 'ar' ? 'الإقامة' : 'Iqama'}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isDark
+                        ? AppColors.textMutedDark
+                        : AppColors.textMuted,
+                  ),
+                )
+              else
+                Text(
+                  lang == 'ar' ? 'الشروق' : 'Sunrise',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: isDark
+                        ? AppColors.textMutedDark
+                        : AppColors.textMuted,
+                  ),
                 ),
-              ),
             ],
           ),
         ],

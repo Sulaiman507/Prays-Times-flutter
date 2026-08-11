@@ -75,11 +75,11 @@ class PrayerProvider extends ChangeNotifier {
     return diff.isNegative ? Duration.zero : diff;
   }
 
-  /// وقت الإقامة (الأذان + الإزاحة)
+  /// وقت الإقامة (الأذان + الإزاحة المخصصة لهذه الصلاة)
   DateTime iqamaTime(PrayerType p) {
     final t = _today?.timeOf(p);
     if (t == null) return _now;
-    return t.add(Duration(minutes: settings.iqamaOffset));
+    return t.add(Duration(minutes: settings.iqamaFor(p)));
   }
 
   /// اسم الصلاة القادمة باللغة الحالية

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/prayer_type.dart';
 import '../providers/app_settings.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gradient_background.dart';
@@ -152,42 +153,27 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // ---------- الإقامة ----------
-            _SectionTitle(text: lang == 'ar' ? 'الإقامة' : 'Iqama'),
+            _SectionTitle(
+              text: lang == 'ar' ? 'الإقامة لكل صلاة' : 'Iqama per Prayer',
+            ),
             _SettingsCard(
-              child: Row(
+              child: Column(
                 children: [
-                  Icon(
-                    Icons.timer_outlined,
-                    color: isDark ? AppColors.gold : AppColors.navy,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      lang == 'ar'
-                          ? 'دقائق الإقامة بعد الأذان'
-                          : 'Iqama minutes after Adhan',
+                  for (final p in const [
+                    PrayerType.fajr,
+                    PrayerType.dhuhr,
+                    PrayerType.asr,
+                    PrayerType.maghrib,
+                    PrayerType.isha,
+                  ])
+                    _IqamaRow(
+                      prayer: p,
+                      settings: settings,
+                      isDark: isDark,
+                      lang: lang,
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    '${settings.iqamaOffset} ${lang == 'ar' ? 'د' : 'min'}',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.goldDark,
-                    ),
-                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Slider(
-              value: settings.iqamaOffset.toDouble(),
-              min: 0,
-              max: 60,
-              divisions: 12,
-              label: '${settings.iqamaOffset} min',
-              onChanged: (v) => settings.iqamaOffset = v.round(),
             ),
             const SizedBox(height: 30),
 
@@ -337,5 +323,114 @@ class _FontChips extends StatelessWidget {
           ),
       ],
     );
+  }
+}
+
+/// صف الإقامة لصلاة واحدة: أيقونة + اسم + عدّاد دقائق (− / +)
+class _IqamaRow extends StatelessWidget {
+  final PrayerType prayer;
+  final AppSettings settings;
+  final bool isDark;
+  final String lang;
+
+  const _IqamaRow({
+    required this.prayer,
+    required this.settings,
+    required this.isDark,
+    required this.lang,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final minutes = settings.iqamaFor(prayer);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: isDark
+                    ? [
+                        AppColors.emerald.withOpacity(0.5),
+                        AppColors.nightRaised.withOpacity(0.6),
+                      ]
+                    : [
+                        AppColors.navy.withOpacity(0.15),
+                        AppColors.navyLight.withOpacity(0.08),
+                      ],
+              ),
+            ),
+            child: Icon(
+              _iconFor(prayer),
+              size: 16,
+              color: isDark ? AppColors.textMutedDark : AppColors.navy,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              prayer.name(lang),
+              style: TextStyle(
+                fontSize: 15,
+                color: isDark ? AppColors.textLight : AppColors.textDark,
+              ),
+            ),
+          ),
+          // زر ناقص
+          IconButton(
+            icon: const Icon(Icons.remove_circle_outline),
+            color: AppColors.gold,
+            iconSize: 22,
+            onPressed: minutes <= 0
+                ? null
+                : () => settings.setIqama(prayer, minutes - 1),
+          ),
+          // القيمة
+          Container(
+            width: 44,
+            alignment: Alignment.center,
+            child: Text(
+              '$minutes',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFeatures: const [FontFeature.tabularFigures()],
+                color: isDark ? AppColors.goldLight : AppColors.goldDark,
+              ),
+            ),
+          ),
+          // زر زائد
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline),
+            color: AppColors.gold,
+            iconSize: 22,
+            onPressed: minutes >= 60
+                ? null
+                : () => settings.setIqama(prayer, minutes + 1),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _iconFor(PrayerType p) {
+    switch (p) {
+      case PrayerType.fajr:
+        return Icons.wb_twilight;
+      case PrayerType.dhuhr:
+        return Icons.wb_sunny;
+      case PrayerType.asr:
+        return Icons.light_mode;
+      case PrayerType.maghrib:
+        return Icons.nights_stay;
+      case PrayerType.isha:
+        return Icons.dark_mode;
+      case PrayerType.sunrise:
+        return Icons.wb_cloudy;
+    }
   }
 }

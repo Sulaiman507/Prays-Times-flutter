@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/city.dart';
+import '../models/prayer_type.dart';
 
 /// إعدادات التطبيق — محفوظة محلياً عبر SharedPreferences
 class AppSettings extends ChangeNotifier {
@@ -12,7 +13,7 @@ class AppSettings extends ChangeNotifier {
   static const _kFontAr = 'font_ar';
   static const _kFontEn = 'font_en';
   static const _kCityId = 'city_id';
-  static const _kIqamaOffset = 'iqama_offset_min';
+  static const _kIqamaPrefix = 'iqama_'; // مفتاح مستقل لكل صلاة
 
   // ---------- الحالة ----------
   String _lang = 'ar'; // 'ar' أو 'en'
@@ -21,7 +22,15 @@ class AppSettings extends ChangeNotifier {
   String _fontAr = 'Tajawal'; // خط العربية
   String _fontEn = 'Tajawal'; // خط الإنجليزية
   String _cityId = 'mecca'; // مكة المكرمة افتراضياً
-  int _iqamaOffset = 15; // دقائق الإقامة بعد الأذان
+
+  /// دقائق الإقامة لكل صلاة على حدة (القيمة الافتراضية: 15 دقيقة)
+  final Map<PrayerType, int> _iqamaOffsets = {
+    PrayerType.fajr: 15,
+    PrayerType.dhuhr: 15,
+    PrayerType.asr: 15,
+    PrayerType.maghrib: 15,
+    PrayerType.isha: 15,
+  };
 
   bool _loaded = false;
 
@@ -33,8 +42,10 @@ class AppSettings extends ChangeNotifier {
   String get fontAr => _fontAr;
   String get fontEn => _fontEn;
   String get cityId => _cityId;
-  int get iqamaOffset => _iqamaOffset;
   bool get loaded => _loaded;
+
+  /// دقائق الإقامة لصلاة معينة
+  int iqamaFor(PrayerType p) => _iqamaOffsets[p] ?? 15;
 
   // ---------- Setters (يحفظ تلقائياً) ----------
   set lang(String v) {
@@ -73,8 +84,9 @@ class AppSettings extends ChangeNotifier {
     _save();
   }
 
-  set iqamaOffset(int v) {
-    _iqamaOffset = v;
+  /// تحديد دقائق الإقامة لصلاة معينة (0–60)
+  void setIqama(PrayerType p, int v) {
+    _iqamaOffsets[p] = v < 0 ? 0 : (v > 60 ? 60 : v);
     notifyListeners();
     _save();
   }
@@ -88,7 +100,9 @@ class AppSettings extends ChangeNotifier {
     _fontAr = prefs.getString(_kFontAr) ?? 'Tajawal';
     _fontEn = prefs.getString(_kFontEn) ?? 'Tajawal';
     _cityId = prefs.getString(_kCityId) ?? 'mecca';
-    _iqamaOffset = prefs.getInt(_kIqamaOffset) ?? 15;
+    for (final p in _iqamaOffsets.keys) {
+      _iqamaOffsets[p] = prefs.getInt('$_kIqamaPrefix${p.id}') ?? 15;
+    }
     _loaded = true;
     notifyListeners();
   }
@@ -101,7 +115,9 @@ class AppSettings extends ChangeNotifier {
     await prefs.setString(_kFontAr, _fontAr);
     await prefs.setString(_kFontEn, _fontEn);
     await prefs.setString(_kCityId, _cityId);
-    await prefs.setInt(_kIqamaOffset, _iqamaOffset);
+    for (final entry in _iqamaOffsets.entries) {
+      await prefs.setInt('$_kIqamaPrefix${entry.key.id}', entry.value);
+    }
   }
 
   /// حفظ المدينة المختارة (مع اسم المدن الكامل)

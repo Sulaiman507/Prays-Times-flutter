@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +46,32 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
+        // شريط علوي بتأثير زجاجي (Blur) متدرج — يختفي تدريجياً للأسفل
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.0, 0.55, 1.0],
+                  colors: isDark
+                      ? [
+                          AppColors.darkBgTop.withOpacity(0.75),
+                          AppColors.darkBgTop.withOpacity(0.35),
+                          AppColors.darkBgTop.withOpacity(0.0),
+                        ]
+                      : [
+                          AppColors.lightBgTop.withOpacity(0.75),
+                          AppColors.lightBgTop.withOpacity(0.35),
+                          AppColors.lightBgTop.withOpacity(0.0),
+                        ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       body: GradientBackground(
         isDark: isDark,
@@ -64,21 +92,6 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     PrayerList(provider: provider, settings: settings),
                     const SizedBox(height: 24),
-                    Center(
-                      child: Text(
-                        settings.isAr
-                            ? '﴿ وَإِذَا نَادَيْتُمْ إِلَى الصَّلَاةِ ﴾'
-                            : '"When the call to prayer is made"',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: isDark
-                              ? AppColors.textMutedDark
-                              : AppColors.textDark.withOpacity(0.5),
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
                   ],
                 ),
               ),
