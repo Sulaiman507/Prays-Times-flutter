@@ -12,7 +12,7 @@ import '../widgets/prayer_list.dart';
 import 'city_selection_screen.dart';
 import 'settings_screen.dart';
 
-/// الشاشة الرئيسية — خلفية متدرجة فاخرة + بطاقة سماوية + قائمة المواقيت
+/// الشاشة الرئيسية — مشهد سماوي بلا صندوق + قائمة المواقيت
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -81,17 +81,16 @@ class HomeScreen extends StatelessWidget {
                 onRefresh: () async => provider.selectCity(city!),
                 child: ListView(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.only(
-                    top: 90,
-                    left: 16,
-                    right: 16,
-                    bottom: 16,
-                  ),
+                  // بلا هامش — المشهد السماوي يملأ العرض كاملاً
+                  padding: EdgeInsets.zero,
                   children: [
+                    // المشهد السماوي بلا صندوق
                     HeaderCard(provider: provider, settings: settings),
-                    const SizedBox(height: 16),
-                    PrayerList(provider: provider, settings: settings),
-                    const SizedBox(height: 24),
+                    // قائمة الصلوات (الهامش هنا فقط لبطاقة القائمة)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+                      child: PrayerList(provider: provider, settings: settings),
+                    ),
                   ],
                 ),
               ),

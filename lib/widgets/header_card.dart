@@ -6,8 +6,9 @@ import '../theme/app_theme.dart';
 import 'countdown_timer.dart';
 import 'prayer_scene.dart';
 
-/// الترويسة العلوية: مشهد سماوي مفتوح يمتد بعرض الشاشة ويذوب في الخلفية
-/// — بدون صندوق أو حدود — + اسم المدينة + التاريخ + الصلاة القادمة + العدّاد
+/// الترويسة العلوية — بلا صندوق نهائياً:
+/// مشهد سماوي يمتد بعرض الشاشة كاملاً ويذوب تدريجياً في الخلفية
+/// من الأعلى (خلف الشريط) ومن الأسفل (فوق قائمة الصلوات)
 class HeaderCard extends StatelessWidget {
   final PrayerProvider provider;
   final AppSettings settings;
@@ -25,37 +26,41 @@ class HeaderCard extends StatelessWidget {
     final d = today.date;
     final gregorian = '${d.day} ${_monthName(d.month, lang)} ${d.year}';
 
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(bottom: Radius.circular(40)),
+    return SizedBox(
+      height: 300,
+      width: double.infinity,
       child: Stack(
         children: [
-          // المشهد السماوي حسب الصلاة الحالية — بدون حدود، يملأ العرض
+          // المشهد السماوي حسب الصلاة الحالية — يملأ العرض كاملاً بلا حدود
           Positioned.fill(
             child: PrayerScene(prayer: provider.currentPrayer, isDark: isDark),
           ),
-          // تدرج سفلي يذوب في لون الخلفية (بدل حدود الصندوق)
+          // تدرج علوي وسفلي يذوبان في لون الخلفية (بدل الصندوق والحدود)
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  stops: const [0.0, 0.55, 1.0],
+                  stops: const [0.0, 0.32, 1.0],
                   colors: [
-                    Colors.black.withOpacity(0.22),
+                    isDark
+                        ? AppColors.darkBgTop.withOpacity(0.92)
+                        : AppColors.lightBgTop.withOpacity(0.92),
                     Colors.transparent,
                     isDark
-                        ? AppColors.darkBgTop.withOpacity(0.95)
-                        : AppColors.lightBgTop.withOpacity(0.95),
+                        ? AppColors.darkBgTop.withOpacity(0.96)
+                        : AppColors.lightBgTop.withOpacity(0.96),
                   ],
                 ),
               ),
             ),
           ),
-          // المحتوى
+          // المحتوى: نصوص نظيفة بلا أي خلفية
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // المدينة
                 Row(
@@ -64,9 +69,9 @@ class HeaderCard extends StatelessWidget {
                     const Icon(
                       Icons.location_on,
                       color: AppColors.goldLight,
-                      size: 18,
+                      size: 16,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 5),
                     Flexible(
                       child: Text(
                         city == null
@@ -75,58 +80,61 @@ class HeaderCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
                           shadows: [
-                            Shadow(color: Colors.black38, blurRadius: 4),
+                            Shadow(color: Colors.black45, blurRadius: 6),
                           ],
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   gregorian,
                   style: const TextStyle(
                     color: Colors.white70,
-                    fontSize: 13,
-                    shadows: [Shadow(color: Colors.black38, blurRadius: 4)],
+                    fontSize: 12,
+                    shadows: [Shadow(color: Colors.black45, blurRadius: 6)],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 22),
 
                 // الصلاة القادمة
                 Text(
                   lang == 'ar' ? 'الصلاة القادمة' : 'Next Prayer',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.85),
-                    fontSize: 13,
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 12,
                     letterSpacing: 0.5,
+                    shadows: const [
+                      Shadow(color: Colors.black45, blurRadius: 6),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   provider.nextPrayerName,
                   style: const TextStyle(
                     color: AppColors.goldLight,
-                    fontSize: 30,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    shadows: [Shadow(color: Colors.black45, blurRadius: 6)],
+                    shadows: [Shadow(color: Colors.black54, blurRadius: 8)],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
 
                 // العدّاد التنازلي
                 CountdownTimer(provider: provider),
 
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   '${lang == 'ar' ? 'متبقي على' : 'Time remaining until'} ${provider.nextPrayerName}',
                   style: const TextStyle(
                     color: Colors.white70,
-                    fontSize: 12,
-                    shadows: [Shadow(color: Colors.black38, blurRadius: 4)],
+                    fontSize: 11,
+                    shadows: [Shadow(color: Colors.black45, blurRadius: 6)],
                   ),
                 ),
               ],

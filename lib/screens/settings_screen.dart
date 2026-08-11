@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +23,35 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(title: Text(lang == 'ar' ? 'الإعدادات' : 'Settings')),
+      appBar: AppBar(
+        title: Text(lang == 'ar' ? 'الإعدادات' : 'Settings'),
+        // شريط علوي بتأثير زجاجي (Blur) متدرج
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: const [0.0, 0.55, 1.0],
+                  colors: isDark
+                      ? [
+                          AppColors.darkBgTop.withOpacity(0.75),
+                          AppColors.darkBgTop.withOpacity(0.35),
+                          AppColors.darkBgTop.withOpacity(0.0),
+                        ]
+                      : [
+                          AppColors.lightBgTop.withOpacity(0.75),
+                          AppColors.lightBgTop.withOpacity(0.35),
+                          AppColors.lightBgTop.withOpacity(0.0),
+                        ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
       body: GradientBackground(
         isDark: isDark,
         child: ListView(
