@@ -7,6 +7,10 @@ build/
 *.iml
 .idea/
 
+# المهارات المثبتة محلياً عبر npx skills — ليست جزءاً من المشروع
+.agents/
+skills-lock.json
+
 # Android
 android/.gradle/
 android/local.properties
