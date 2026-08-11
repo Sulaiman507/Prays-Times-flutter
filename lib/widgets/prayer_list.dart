@@ -72,7 +72,7 @@ class _PrayerRow extends StatelessWidget {
   final bool isDark;
   final String lang;
   final String adhan;
-  final String iqama;
+  final String? iqama; // null = بدون إقامة (مثل الشروق)
 
   const _PrayerRow({
     required this.type,
